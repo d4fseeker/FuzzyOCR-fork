@@ -1,0 +1,16 @@
+## Install FuzzyOCR on Centos6 with cPanel
+## NOTE: please change perl version to latest current!
+
+yum install netpbm netpbm-progs ImageMagick libungif libungif-progs gocr
+
+cd /opt/cpanel/perl5/522/site_lib
+/usr/local/cpanel/3rdparty/perl/524/bin/cpan install String::Approx
+
+git clone https://github.com/d4fseeker/FuzzyOCR-fork.git
+cd FuzzyOCR-fork
+cp FuzzyOcr.cf FuzzyOcr.pm /etc/mail/spamassassin/
+cp FuzzyOcr.words.sampe /etc/mail/spamassassin/FuzzyOcr.words
+
+/scripts/restartsrv_spamd
+
+Add score to local.cf:  score FUZZY_OCR 4.0

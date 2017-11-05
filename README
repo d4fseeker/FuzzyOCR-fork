@@ -1,0 +1,5 @@
+Modified FuzzyOCR to log to standard spamd debug/info output instead of its down logfile.
+Added a couple words (more to come)
+
+
+Added INSTALL-CPANEL as instruction set for how to install on standard cPanel servers
