@@ -9,6 +9,9 @@ describe FUZZY_OCR_CORRUPT_IMG Mail contains a corrupted image
 body FUZZY_OCR_KNOWN_HASH eval:dummy_check()
 describe FUZZY_OCR_KNOWN_HASH Mail contains an image with known hash
 
+body FUZZY_OCR_WORDS eval:dummy_check()
+describe FUZZY_OCR_WORDS  Image contains the listed bad words
+
 priority FUZZY_OCR             900
 
 ########### Plugin Configuration #############
@@ -53,6 +56,7 @@ focr_global_wordlist /etc/mail/spamassassin/FuzzyOcr.words
 ############################################################################################
 
 ##### Scansets, comma seperated (Default value: $gocr -i -, $gocr -l 180 -d 2 -i -) #####
+# WARNING: DO NOT USE AS BROKEN. CONFIGURE IN .pm
 # Each scanset consists of one or more commands which make text out of pnm input.
 # Each scanset is run seperately on the PNM data, results are combined in scoring.
 #focr_scansets $gocr -i -, $gocr -l 180 -d 2 -i -
@@ -64,7 +68,8 @@ focr_global_wordlist /etc/mail/spamassassin/FuzzyOcr.words
 # Thisone uses the first the standard scan, then a scanset which first reduces the image to 3 colors and then scans it with custom settings
 # and then it scans again only with these custom settings
 # NOTE: This is for advanced users only, if you have questions how to use this, ask on the ML or on IRC
-#focr_scansets $gocr -i -, pnmnorm 2>$errfile | pnmquant 3 2>>$errfile | pnmnorm 2>>$errfile | $gocr -l 180 -d 2 -i -, $gocr -l 180 -d 2 -i -
+# focr_scansets $gocr -i -, pnmnorm 2>$errfile | pnmquant 3 2>>$errfile | pnmnorm 2>>$errfile | $gocr -l 180 -d 2 -i -, $gocr -l 180 -d 2 -i -
+# focr_scansets /usr/bin/gocr -i
 #########################################################################################
 
 ##### Various Score/Scan settings #####
@@ -72,28 +77,28 @@ focr_global_wordlist /etc/mail/spamassassin/FuzzyOcr.words
 #focr_timeout 10
 #
 # Default detection treshold (see manual) (Default value: 0.3) (Can be changed on a per word basis in the wordlist).
-#focr_threshold 0.3
+focr_threshold 0.2
 #
 # This is the score for a hit after focr_counts_required matches
-#focr_base_score 4
+focr_base_score 2
 #
 # This is the additional score for every additional match after focr_counts_required matches (Default value: 1)
-#focr_add_score 1
+focr_add_score 2
 #
 # This is the score to give for a wrong content-type (e.g. JPEG image but content type says GIF) (Default value: 1.5)
-#focr_wrongctype_score 1.5
+focr_wrongctype_score 0.1
 #
 # This is the score to give for a corrupted image (This currently affects only GIF images) (Default value: 2.5)
-#focr_corrupt_score 2.5
+focr_corrupt_score 1.9
 #
 # This is the score to give for a corrupted unfixable image (This currently affects only GIF images) (Default value: 5)
-#focr_corrupt_unfixable_score 5
+focr_corrupt_unfixable_score 3
 #
 # This is used to disable the OCR engine if the message has already more points than this value (Default value: 10)
 ocr_autodisable_score 8
 #
 # Number of minimum matches before the rule scores (Default value: 2)
-#focr_counts_required 2
+focr_counts_required 1
 #
 # Specifies, how many frames an animated gif must contain, so the second (less resource consuming) animated gif test is used. (Default value: 5)
 #focr_gif_max_frames 5

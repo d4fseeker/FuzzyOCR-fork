@@ -1,26 +1,4 @@
 # Here we defined the words to scan for
-# Stock
-alert
-charts
-profit
-news::0.2
-breaking
-symbol
-alert
-stock
-investor
-international::0
-company
-money::0
-million
-thousand
-buy
-price::0.2
-trade
-target
-banking
-service
-recommendation
 # Pills
 viagra
 cialis
@@ -40,9 +18,7 @@ prescription
 # Misc
 click here
 software
-kunde::0.2
-volksbank
-sparkasse
 #Alutashop
 potenzmittel
+potenzpillen
 generika

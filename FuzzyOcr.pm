@@ -107,9 +107,16 @@ our $dscore      = 10;
 our $logfile     = "/etc/mail/spamassassin/FuzzyOcr.log";
 our $pwordlist   = ".spamassassin/fuzzyocr.words";
 our $digest_db   = "/etc/mail/spamassassin/FuzzyOcr.hashdb";
-our @scansets    = (
-    '$gocr -i -',
-    '$gocr -l 180 -d 2 -i -'
+
+#our @scansets    = (
+#    '$gocr -i -',
+#    '$gocr -l 180 -d 2 -i -'
+#);
+
+our @scansets     = (
+	'$gocr -i -', 
+	'pnmnorm 2>$errfile | pnmquant 3 2>>$errfile | pnmnorm 2>>$errfile | $gocr -l 180 -d 2 -i -', 
+	'$gocr -l 180 -d 2 -i -'
 );
 
 # constructor: register the eval rule
@@ -815,8 +822,7 @@ sub check_fuzzy_ocr {
                         my $matched = adistr( $w, $_ );
                         if ( abs($matched) < $wthreshold ) {
                             $cwcnt++;
-                            debuglog(
-"Found word \"$w\" in line\n \"$_\" \n with fuzz of "
+			    debuglog("Found word \"$w\" in line\n \"$_\" \n with fuzz of "
                                   . abs($matched)
                                   . " scanned with scanset $used_scansets[$gcnt]"
                             );
@@ -855,8 +861,7 @@ sub check_fuzzy_ocr {
             $pms->{conf}->{scoreset}->[$set]->{"FUZZY_OCR"} =
               sprintf( "%0.3f", $score );
         }
-        $pms->_handle_hit( "FUZZY_OCR", $score, "BODY: ",
-            $pms->{conf}->{descriptions}->{FUZZY_OCR} . "\n$debuginfo" );
+        $pms->_handle_hit( "FUZZY_OCR", $score, $pms->{conf}->{descriptions}->{FUZZY_OCR} . "\nWords detected:\n".join( ", ", @found) );
     }
     debuglog("Detected value: $cnt");
     debuglog("Ending successfully...");
