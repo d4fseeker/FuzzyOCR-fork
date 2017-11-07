@@ -833,7 +833,7 @@ sub check_fuzzy_ocr {
                 }
                 $cnt += $wcnt;
                 if ( ( $verbose > 0 ) and ($wcnt) ) {
-                    push( @found, "\"$w\" in $wcnt lines" );
+                    push( @found, "$w" );
                 }
             }
         }
@@ -861,7 +861,13 @@ sub check_fuzzy_ocr {
             $pms->{conf}->{scoreset}->[$set]->{"FUZZY_OCR"} =
               sprintf( "%0.3f", $score );
         }
-        $pms->_handle_hit( "FUZZY_OCR", $score, $pms->{conf}->{descriptions}->{FUZZY_OCR} . "\nWords detected:\n".join( ", ", @found) );
+	foreach(@found) {
+		for my $set ( 0 .. 3 ) {
+			$pms->{conf}->{scoreset}->[$set]->{"FUZZY_OCR_WORD_$_"} = 0.1;
+		}
+		$pms->_handle_hit( "FUZZY_OCR_WORD_$_" , 0.1 , "FuzzyOCR detected word: $_" );
+	}
+        $pms->_handle_hit( "FUZZY_OCR", $score, $pms->{conf}->{descriptions}->{FUZZY_OCR} . " Words detected: ".join( ", ", @found) );
     }
     debuglog("Detected value: $cnt");
     debuglog("Ending successfully...");
